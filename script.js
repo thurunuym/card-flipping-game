@@ -4,18 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let cardsChosen = [];
     let cardsChosenId = [];
     let cardsWon = [];
+    let startTime;
+    let timerInterval;
 
     const cardArray = [
-        { name: 'card1', img: 'images/distracted.png' },
-        { name: 'card1', img: 'images/distracted.png' },
-        { name: 'card2', img: 'images/drake.png' },
-        { name: 'card2', img: 'images/drake.png' },
-        { name: 'card3', img: 'images/fine.png' },
-        { name: 'card3', img: 'images/fine.png' },
-        { name: 'card4', img: 'images/rollsafe.png' },
-        { name: 'card4', img: 'images/rollsafe.png' },
-        { name: 'card5', img: 'images/success.png' },
-        { name: 'card5', img: 'images/success.png' },
+        { name: 'card1', img: 'images/k1.jpg' },
+        { name: 'card1', img: 'images/k2.jpg' },
+        { name: 'card2', img: 'images/q1.jpg' },
+        { name: 'card2', img: 'images/q2.jpg' },
+        { name: 'card3', img: 'images/j1.jpg' },
+        { name: 'card3', img: 'images/j2.jpg' },
+        { name: 'card4', img: 'images/t1.jpg' },
+        { name: 'card4', img: 'images/t2.jpg' },
+        { name: 'card5', img: 'images/a1.jpg' },
+        { name: 'card5', img: 'images/a2.jpg' },
     ];
 
     function shuffle(array) {
@@ -24,9 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createBoard() {
         shuffle(cardArray);
-        grid.innerHTML = '';
+        grid.innerHTML = '';  // Clear old board
         cardsWon = [];
+        cardsChosen = [];
+        cardsChosenId = [];
 
+        // Start the timer
+        startTime = new Date();
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+
+        // Generate cards
         for (let i = 0; i < cardArray.length; i++) {
             const card = document.createElement('img');
             card.setAttribute('src', 'images/blank.png');
@@ -34,6 +44,23 @@ document.addEventListener('DOMContentLoaded', () => {
             card.addEventListener('click', flipCard);
             grid.appendChild(card);
         }
+
+        // Optional: display timer on page
+        if (!document.getElementById('timer')) {
+            const timerEl = document.createElement('p');
+            timerEl.id = 'timer';
+            timerEl.style.fontSize = '1.2rem';
+            timerEl.style.color = '#ffd700';
+            timerEl.style.marginTop = '20px';
+            document.querySelector('.container').appendChild(timerEl);
+        }
+        document.getElementById('timer').textContent = 'Time: 0s';
+    }
+
+    function updateTimer() {
+        const now = new Date();
+        const elapsed = Math.floor((now - startTime) / 1000); // seconds
+        document.getElementById('timer').textContent = `Time: ${elapsed}s`;
     }
 
     function flipCard() {
@@ -43,12 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
             cardsChosenId.push(cardId);
             this.setAttribute('src', cardArray[cardId].img);
             if (cardsChosen.length === 2) {
-                setTimeout(checkForMatch, 500);
+                setTimeout(checkForMatch, 550);
             }
         }
     }
 
-        function checkForMatch() {
+    function checkForMatch() {
         const cards = document.querySelectorAll('#game-board img');
         const firstCardId = cardsChosenId[0];
         const secondCardId = cardsChosenId[1];
@@ -68,10 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsChosenId = [];
 
         if (cardsWon.length === cardArray.length / 2) {
-            alert('Congratulations! You found them all!');
+            clearInterval(timerInterval); // stop timer
+            const endTime = new Date();
+            const totalTime = Math.floor((endTime - startTime) / 1000);
+            alert(`Congratulations! You found them all in ${totalTime} seconds!`);
         }
     }
 
     startButton.addEventListener('click', createBoard);
-
 });
