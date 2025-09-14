@@ -1,4 +1,4 @@
-# Meme Matching Game 🎮
+# Card Matching Game 🎮
 
 A fun **Memory Card Game** built with **HTML, CSS, and JavaScript**. This project was created as a **learning exercise for AWS**, specifically using **S3 for static website hosting** and **CodePipeline for automated deployment**.  
 
